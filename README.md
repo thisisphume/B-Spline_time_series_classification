@@ -104,6 +104,20 @@ There are many different types (models) of classifier  f ̂(X), such as generati
 ## Direct Classification based on the original data 
 ![result_direct_clf](pic/direct_clf.PNG)
 ## LSTM
+
+```python
+input_layer = Input(shape=(traindata.shape[1], 1))
+
+l1 = TimeDistributed(Dense(125, activation='tanh'))(input_layer)
+l1 = LSTM(256, activation='sigmoid')(input_layer)
+l2 = Dense(1, activation='sigmoid')(l1)
+
+model = Model(input_layer, l2)
+
+model.compile(optimizer='adam', loss='binary_crossentropy', metrics=['acc'])
+es = EarlyStopping(monitor='val_loss', mode='auto', restore_best_weights=True, verbose=1, patience=500)
+history = model.fit(traindata, trainclass, epochs=2000, verbose=2, validation_data=(testdata, testclass), callbacks=[es])
+```
 ![architectur](pic/LSTM_architect.png)
 
 ![LSTM_result](pic/LSTMresult.png)
