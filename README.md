@@ -87,7 +87,7 @@ for (k in 5:40){
 
 In figure 3, it appears that the B-splines regression of degree 1 with 32 knots (circled in red) has the lowest average of the MSE. However, given that there are only 96 data points for each observation, it means that there are only 3 data points for each linear spline which could suggest that this might be overfitting the curve. We can see in the figure 4 that the B-spline of degree 1 with 32 knots (the red curve) is overfitting, it is almost identical to the actual observation. Therefore, we will use the B-splines regression of degree 2 with 20 knots to extract the feature since it can capture both global and local trends, as shown in the green curve.
 
-![obs_with_bspline](pic/obs_with_bspline.png)
+![obs_with_bspline](pic/obs_with_bspline.PNG)
 <font size="1">Figure 4 Fitted curve of the selected B-splines with different degree and knots on three different observations.
 </font> 
 
@@ -99,10 +99,10 @@ There are many different types (models) of classifier  f ̂(X), such as generati
 
 # Result (In progress)
 ## Two-stages classifcation (our method)
-![result](pic/result.png)
+![result](pic/result.PNG)
 
 ## Direct Classification based on the original data 
-![result_direct_clf](pic/direct_clf.png)
+![result_direct_clf](pic/direct_clf.PNG)
 ## LSTM
 ![architectur](pic/LSTM_architect.png)
 
