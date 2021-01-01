@@ -93,7 +93,7 @@ In figure 3, it appears that the B-splines regression of degree 1 with 32 knots 
 
 
 ### Second step: Classification
-After the feature extraction process, we now have a vector of coefficients of each patient, denoted as <!-- $x_i \in \R^{K+d+1}$ --> <img style="transform: translateY(0.1em); background: white;" src="..\..\..\..\Desktop\ML_NOTE\svg\cH2r1EWBc7.svg">, which will be used as features (independent variables) to train a classifier. The target binary variable <!-- $Y$ --> <img style="transform: translateY(0.1em); background: white;" src="..\..\..\..\Desktop\ML_NOTE\svg\0Toixh9As7.svg"> has two values, Normal and Ischemia. 
+After the feature extraction process, we now have a vector of coefficients of each patient, denoted as <!-- $x_i \in \R^{K+d+1}$ --> <img style="transform: translateY(0.1em); background: white;" src="https://render.githubusercontent.com/render/math?math=x_i%20%5Cin%20%5CR%5E%7BK%2Bd%2B1%7D">, which will be used as features (independent variables) to train a classifier. The target binary variable <!-- $Y$ --> <img style="transform: translateY(0.1em); background: white;" src="https://render.githubusercontent.com/render/math?math=Y"> has two values, Normal and Ischemia. 
 
 There are many different types (models) of classifiers such as generative classifier, discriminative classifier, tree-based model, or parametric model. Since our objective is to construct the model that performs best (highest predictability), we will not be constraint with a certain classifier model but, instead, we will be testing out several models and using cross-validation to select the best model. 
 
@@ -108,7 +108,7 @@ The dataset was randomly split into training and testing sets (9:1) in a stratif
 </font> 
 
 ## Direct Classification based on the original data 
-Table 2 below is the result from fitting the classification model directly to the original (curve) data, of the form <!-- $(Y_i, Z_i)$ --> <img style="transform: translateY(0.1em); background: white;" src="..\..\..\..\Desktop\ML_NOTE\svg\eb9h1W7dCE.svg"> where <!-- $Z_i = (z_{i1}, ..., z_{i96})$ --> <img style="transform: translateY(0.1em); background: white;" src="..\..\..\..\Desktop\ML_NOTE\svg\M1w4dUIoB1.svg"> is the measurement of the ECG of patient <!-- $i^{th}$ --> <img style="transform: translateY(0.1em); background: white;" src="..\..\..\..\Desktop\ML_NOTE\svg\fBFqYWZX5O.svg"> and <!-- $Y_i$ --> <img style="transform: translateY(0.1em); background: white;" src="..\..\..\..\Desktop\ML_NOTE\svg\xe2sCkEGbD.svg"> is a binary response. The result shows that the predictability is not as good as our approach method but it is quite good considering the fact that it is much simpler. 
+Table 2 below is the result from fitting the classification model directly to the original (curve) data, of the form $(Y_i, Z_i)$ where $Z_i = (z_{i1}, ..., z_{i96})$ is the measurement of the ECG of patient $i^{th}$ and $Y_i$ is a binary response. The result shows that the predictability is not as good as our approach method but it is quite good considering the fact that it is much simpler. 
 
 ![result_direct_clf](pic/direct_clf.png) \
 <font size="1">**Table 2** present the errors of different classification models based on a direct classification approach. 
