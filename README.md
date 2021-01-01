@@ -85,7 +85,7 @@ for (k in 5:40){
 <font size="1">Figure 3 shows the average of the mean squared error across all patients for each combination of d and K.
 </font> 
 
-In figure 3, it appears that the B-splines regression of degree 1 with 32 knots (circled in red) has the lowest average of the MSE. However, given that there are only 96 data points for each observation, it means that, for 32 knots, there are only 3 data points for each linear spline which could suggest that this might be overfitting the curve. We can see in the figure 4 that the B-spline of degree 1 with 32 knots (the red curve) is overfitting, it is almost identical to the actual observation. Therefore, we will use the B-splines regression of degree 2 with 20 knots to extract the feature since it can capture both global and local trends, as shown in the green curve.
+In figure 3, it appears that the B-splines regression of degree 1 with 32 knots (circled in red) has the lowest average of the MSE. However, given that there are only 96 data points for each observation, it means that, for 32 knots, there are only 3 data points for each linear spline which could suggest that this might be overfitting the curve. We can see in figure 4 that the B-spline of degree 1 with 32 knots (the red curve) is overfitting, it is almost identical to the actual observation. Therefore, we will use the B-splines regression of degree 2 with 20 knots to extract the feature since it can capture both global and local trends, as shown in the green curve.
 
 ![obs_with_bspline](pic/obs_with_bspline.png) \
 <font size="1">Figure 4 Fitted curve of the selected B-splines with different degree and knots on three different observations.
@@ -93,23 +93,42 @@ In figure 3, it appears that the B-splines regression of degree 1 with 32 knots 
 
 
 ### Second step: Classification
-After the feature extraction process, we now have a vector of coefficients of each patient, denoted it as $x_i \in \R^{K+d+1}$, which will be used as features (independent variables) to train a classifier. The target binary variable $Y$ has two values, Normal and Ischemia. 
+After the feature extraction process, we now have a vector of coefficients of each patient, denoted as <!-- $x_i \in \R^{K+d+1}$ --> <img style="transform: translateY(0.1em); background: white;" src="..\..\..\..\Desktop\ML_NOTE\svg\cH2r1EWBc7.svg">, which will be used as features (independent variables) to train a classifier. The target binary variable <!-- $Y$ --> <img style="transform: translateY(0.1em); background: white;" src="..\..\..\..\Desktop\ML_NOTE\svg\0Toixh9As7.svg"> has two values, Normal and Ischemia. 
 
-There are many different types (models) of classifier such as generative classifier, discriminative classifier, tree-based model, or parametric model. Since our objective is to construct the model that performs best (highest predictability), we will not be constraint with a certain classifier model but, instead, we will be testing out several models and using cross-validation to select the best model. 
+There are many different types (models) of classifiers such as generative classifier, discriminative classifier, tree-based model, or parametric model. Since our objective is to construct the model that performs best (highest predictability), we will not be constraint with a certain classifier model but, instead, we will be testing out several models and using cross-validation to select the best model. 
 
-Since we have an imbalance problem, the accuracy metric alone is not enough information for us to select the best model. We will consider recall, precision, and F1 score as well. For this purpose, we want to make sure that the risk of not alerting a person which may be sick is minimal. In other words, we want to minimize the *Missing Rate* or *False Negative Rate* `FalseNegativeRate = False Negative / Number of all positive` where `False Negative` is when the model indicate that the Ischemia (abnormal) patient is normal. This is equivalent to finding the model that maximize the Recall since `FalseNegativeRate = 1 - Recall`.
+Since we have an imbalance problem, the accuracy metric alone is not enough information for us to select the best model. We will consider `recall`, `precision`, and `F1` score as well. For this purpose, we want to make sure that the risk of not alerting a person who may be sick is minimal. In other words, we want to minimize the *Missing Rate* or *False Negative Rate* `FalseNegativeRate = False Negative / Number of all positive` where `False Negative` is when the model indicates that the Ischemia (abnormal) patient is normal. This is equivalent to finding the model that maximizes the Recall since `FalseNegativeRate = 1 - Recall`.
 
-# Result (In progress)
+# Result 
 ## Two-stages classification (our method)
-The dataset was randomly split into training and testing set (9:1) in a stratified fashion based on the class label. The testing set consist of 20 patients (7: abnormal and 13: normal). The performance metric based on test dataset are summarized in Table 1. Overall, Linear Discriminant Analysis model with the predictors extracted from the B-spline regression of degree 2 with 20 knots performs the best among other classification models with the highest Recall and the highest F1 score of 0.95 and 0.94, respectively.
+The dataset was randomly split into training and testing sets (9:1) in a stratified fashion based on the class label. The testing set consists of 20 patients (7: abnormal and 13: normal). The performance metric based on the test dataset is summarized in Table 1. Overall, Linear Discriminant Analysis model with the predictors extracted from the B-spline regression of degree 2 with 20 knots performs the best among other classification models with the highest Recall and the highest F1 score of 0.95 and 0.94, respectively.
 
-![result](pic/result_our_approach.png)
-<font size="1">**Table 1** The performance metric based on the test dataset from 12 different classifiers 
+![result](pic/result_our_approach.png) \
+<font size="1">**Table 1** The performance metric based on the test dataset from 12 different classifiers fitted on the extracted features from the B-spline regression of degree 2 with 20 knots.
 </font> 
 
 ## Direct Classification based on the original data 
-![result_direct_clf](pic/direct_clf.png)
-## LSTM
-![architectur](pic/LSTM_architect.png)
+Table 2 below is the result from fitting the classification model directly to the original (curve) data, of the form <!-- $(Y_i, Z_i)$ --> <img style="transform: translateY(0.1em); background: white;" src="..\..\..\..\Desktop\ML_NOTE\svg\eb9h1W7dCE.svg"> where <!-- $Z_i = (z_{i1}, ..., z_{i96})$ --> <img style="transform: translateY(0.1em); background: white;" src="..\..\..\..\Desktop\ML_NOTE\svg\M1w4dUIoB1.svg"> is the measurement of the ECG of patient <!-- $i^{th}$ --> <img style="transform: translateY(0.1em); background: white;" src="..\..\..\..\Desktop\ML_NOTE\svg\fBFqYWZX5O.svg"> and <!-- $Y_i$ --> <img style="transform: translateY(0.1em); background: white;" src="..\..\..\..\Desktop\ML_NOTE\svg\xe2sCkEGbD.svg"> is a binary response. The result shows that the predictability is not as good as our approach method but it is quite good considering the fact that it is much simpler. 
 
-![LSTM_result](pic/LSTMresult.png)
+![result_direct_clf](pic/direct_clf.png) \
+<font size="1">**Table 2** present the errors of different classification models based on a direct classification approach. 
+</font> 
+
+## LSTM
+Lastly, we consider the LSTM recurrent neural networks. LSTM is capable of capturing the temporal dependencies from the ECG curve. In Saeed (2019), the author used wavelet transform and multiple LSTM recurrent neural networks for the classification of cardiac arrhythmias based on the ECG signal. We borrowed the idea of applying the LSTM recurrent neural networks for our classification task. However, we are using a simpler LSTM architecture, as shown in figure 5. There are two layers, the LSTM layer, and the Dense layer.
+
+![architectur](pic/LSTM_architect.png) \
+<font size="1">Figure 5 is an architecture of the LSTM model that we used for our classification task.</font> 
+
+The way this (vanilla) LSTM model work is very similar to the two-step classification where the LSMT layer is trying to capture information within the sequence of the data and pass to the Dense layer to evaluate and produce the prediction class. Note that, unlike our approach, the coefficients or weights of these nodes in these layers are fitted or optimized simultaneously. In figure 6, it shows the training and validation accuracy of the
+model on different epochs. The best model occurs at the 70th epoch with the validation error of 0.88 (in red circle).
+
+
+![LSTM_result](pic/LSTMresult.png) \
+<font size="1">Figure 6 show the progression of the LSTM's performance both training accuracy and validation accuracy.</font> 
+
+
+# Reference
+[1]  Abraham, C., et al. “Unsupervised Curve Clustering Using B-Splines.” Scandinavian Journal of Statistics, vol. 30, no. 3, 2003, pp. 581–595., doi:10.1111/1467-9469.00350.
+
+[2] Saadatnejad, Saeed, et al. “LSTM-Based ECG Classification for Continuous Monitoring on Personal Wearable Devices.” IEEE Journal of Biomedical and Health Informatics, vol. 24, no. 2, 2020, pp. 515–523., doi:10.1109/jbhi.2019.2911367.
