@@ -8,14 +8,14 @@ Data collected through the experiment or observation from different fields of sc
 ## Data 
 Here, we are using the ECG dataset that measures the heart's electrical activity, collected by Robert Olszewski. There are n=200 observations (series) where each series reflects 1 heartbeat of an individual which usually takes about a second. The measurement is recorded every 10 milliseconds which results in 96 sample-points per series. There are 2 classes of observation, normal and abnormal (Ischemia). Cardiac ischemia happens when the heart muscle lacks blood flow and oxygen. A long period of cardiac [ischemia](texasheart.org) can cause a heart attack and damage to the heart tissue.
 
-![ECG Data Overview](pic/ECG_of_two_groups.png)
+![ECG Data Overview](pic/ECG_of_two_groups.png) \
 <font size="1">Figure 1 Standardized Measurement of the Electrical Activity of 200 patients represent the normal activity (in green color) and abnormal (in orange color)
 </font> 
 
 
  In this dataset, 133 series are classified as normal while the remaining 67 are classified as abnormal. Figure 2 shows that in our dataset, the number of normal patients is twice as much of the abnormal patients. This means that we have an unbalance classification problem. Therefore, we will have to be more careful during the model selection step. Additional to the accuracy criteria, precision, recall, and F1-score will be used to assess the classification model’s performance.
 
-![ECG Imbalanced data](pic/imbalance_data.png)
+![ECG Imbalanced data](pic/imbalance_data.png) \
 <font size="1">Figure 2 A bar chart represents the number of observations in each class
 </font> 
 
@@ -81,43 +81,35 @@ for (k in 5:40){
 }
 ```
 
-![10Fold_CV](pic/10-Folds_cv.png)
+![10Fold_CV](pic/10-Folds_cv.png) \
 <font size="1">Figure 3 shows the average of the mean squared error across all patients for each combination of d and K.
 </font> 
 
-In figure 3, it appears that the B-splines regression of degree 1 with 32 knots (circled in red) has the lowest average of the MSE. However, given that there are only 96 data points for each observation, it means that there are only 3 data points for each linear spline which could suggest that this might be overfitting the curve. We can see in the figure 4 that the B-spline of degree 1 with 32 knots (the red curve) is overfitting, it is almost identical to the actual observation. Therefore, we will use the B-splines regression of degree 2 with 20 knots to extract the feature since it can capture both global and local trends, as shown in the green curve.
+In figure 3, it appears that the B-splines regression of degree 1 with 32 knots (circled in red) has the lowest average of the MSE. However, given that there are only 96 data points for each observation, it means that, for 32 knots, there are only 3 data points for each linear spline which could suggest that this might be overfitting the curve. We can see in the figure 4 that the B-spline of degree 1 with 32 knots (the red curve) is overfitting, it is almost identical to the actual observation. Therefore, we will use the B-splines regression of degree 2 with 20 knots to extract the feature since it can capture both global and local trends, as shown in the green curve.
 
-![obs_with_bspline](pic/obs_with_bspline.PNG)
+![obs_with_bspline](pic/obs_with_bspline.png) \
 <font size="1">Figure 4 Fitted curve of the selected B-splines with different degree and knots on three different observations.
 </font> 
 
 
 ### Second step: Classification
-After the feature extraction process, we now have a vector of coefficients of each patient which will be used as features (independent variables) to train a classifier. The target variable has two values, Normal and Ischemia. 
+After the feature extraction process, we now have a vector of coefficients of each patient, denoted it as $x_i \in \R^{K+d+1}$, which will be used as features (independent variables) to train a classifier. The target binary variable $Y$ has two values, Normal and Ischemia. 
 
-There are many different types (models) of classifier  f ̂(X), such as generative classifier, discriminative classifier, tree-based model, or parametric model. Since our objective is to construct the model that performs best (highest predictability), we will not be constraint with a certain classifier model but, instead, we will be testing out several models and using cross-validation for the model selection. 
+There are many different types (models) of classifier such as generative classifier, discriminative classifier, tree-based model, or parametric model. Since our objective is to construct the model that performs best (highest predictability), we will not be constraint with a certain classifier model but, instead, we will be testing out several models and using cross-validation to select the best model. 
+
+Since we have an imbalance problem, the accuracy metric alone is not enough information for us to select the best model. We will consider recall, precision, and F1 score as well. For this purpose, we want to make sure that the risk of not alerting a person which may be sick is minimal. In other words, we want to minimize the *Missing Rate* or *False Negative Rate* `FalseNegativeRate = False Negative / Number of all positive` where `False Negative` is when the model indicate that the Ischemia (abnormal) patient is normal. This is equivalent to finding the model that maximize the Recall since `FalseNegativeRate = 1 - Recall`.
 
 # Result (In progress)
-## Two-stages classifcation (our method)
-![result](pic/result.PNG)
+## Two-stages classification (our method)
+The dataset was randomly split into training and testing set (9:1) in a stratified fashion based on the class label. The testing set consist of 20 patients (7: abnormal and 13: normal). The performance metric based on test dataset are summarized in Table 1. Overall, Linear Discriminant Analysis model with the predictors extracted from the B-spline regression of degree 2 with 20 knots performs the best among other classification models with the highest Recall and the highest F1 score of 0.95 and 0.94, respectively.
+
+![result](pic/result_our_approach.png)
+<font size="1">**Table 1** The performance metric based on the test dataset from 12 different classifiers 
+</font> 
 
 ## Direct Classification based on the original data 
-![result_direct_clf](pic/direct_clf.PNG)
+![result_direct_clf](pic/direct_clf.png)
 ## LSTM
-
-```python
-input_layer = Input(shape=(traindata.shape[1], 1))
-
-l1 = TimeDistributed(Dense(125, activation='tanh'))(input_layer)
-l1 = LSTM(256, activation='sigmoid')(input_layer)
-l2 = Dense(1, activation='sigmoid')(l1)
-
-model = Model(input_layer, l2)
-
-model.compile(optimizer='adam', loss='binary_crossentropy', metrics=['acc'])
-es = EarlyStopping(monitor='val_loss', mode='auto', restore_best_weights=True, verbose=1, patience=500)
-history = model.fit(traindata, trainclass, epochs=2000, verbose=2, validation_data=(testdata, testclass), callbacks=[es])
-```
 ![architectur](pic/LSTM_architect.png)
 
 ![LSTM_result](pic/LSTMresult.png)
