@@ -108,7 +108,7 @@ The dataset was randomly split into training and testing sets (9:1) in a stratif
 </font> 
 
 ## Direct Classification based on the original data 
-Table 2 below is the result from fitting the classification model directly to the original (curve) data, of the form $(Y_i, Z_i)$ where $Z_i = (z_{i1}, ..., z_{i96})$ is the measurement of the ECG of patient $i^{th}$ and $Y_i$ is a binary response. The result shows that the predictability is not as good as our approach method but it is quite good considering the fact that it is much simpler. 
+Table 2 below is the result from fitting the classification model directly to the original (curve) data, of the form <!-- $(Y_i, Z_i)$ --> <img style="transform: translateY(0.1em); background: white;" src="https://render.githubusercontent.com/render/math?math=(Y_i%2C%20Z_i)"> where <!-- $Z_i = (z_{i1}, ..., z_{i96})$ --> <img style="transform: translateY(0.1em); background: white;" src="https://render.githubusercontent.com/render/math?math=Z_i%20%3D%20(z_%7Bi1%7D%2C%20...%2C%20z_%7Bi96%7D)"> is the measurement of the ECG of patient <!-- $i^{th}$ --> <img style="transform: translateY(0.1em); background: white;" src="https://render.githubusercontent.com/render/math?math=i%5E%7Bth%7D"> and <!-- $Y_i$ --> <img style="transform: translateY(0.1em); background: white;" src="https://render.githubusercontent.com/render/math?math=Y_i"> is a binary response. The result shows that the predictability is not as good as our approach method but it is quite good considering the fact that it is much simpler. 
 
 ![result_direct_clf](pic/direct_clf.png) \
 <font size="1">**Table 2** present the errors of different classification models based on a direct classification approach. 
@@ -116,6 +116,17 @@ Table 2 below is the result from fitting the classification model directly to th
 
 ## LSTM
 Lastly, we consider the LSTM recurrent neural networks. LSTM is capable of capturing the temporal dependencies from the ECG curve. In Saeed (2019), the author used wavelet transform and multiple LSTM recurrent neural networks for the classification of cardiac arrhythmias based on the ECG signal. We borrowed the idea of applying the LSTM recurrent neural networks for our classification task. However, we are using a simpler LSTM architecture, as shown in figure 5. There are two layers, the LSTM layer, and the Dense layer.
+
+```python
+### Model Construction
+input_layer = Input(shape=(96, 1))
+layer1 = LSTM(256, activation='sigmoid')(input_layer)
+layer2 = Dense(1, activation='sigmoid')(layer1)
+model = Model(input_layer, l2)
+
+### Fitting the model 
+model.compile(optimizer='adam', loss='binary_crossentropy', metrics=['acc'])
+```
 
 ![architectur](pic/LSTM_architect.png) \
 <font size="1">Figure 5 is an architecture of the LSTM model that we used for our classification task.</font> 
